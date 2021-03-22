@@ -1,25 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import React from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Chat from "./components/Chat";
+import Sidebar from "./components/Sidebar";
+import { useAppSelector, useAppDispatch } from "./redux/hooks";
+import { decrement, increment, incrementByAmount } from "./redux/userSlice";
 function App() {
+  const count = useAppSelector((state) => state.user.count);
+  const dispatch = useAppDispatch();
+
+  let isLogin = true;
+  if (!isLogin) return <Login />;
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Sidebar />
+      <Switch>
+        <Route path="/chat/:id">
+          <Chat />
+          {count}
+          <button onClick={() => dispatch(decrement())}>-1</button>
+          <button onClick={() => dispatch(increment())}>+1</button>
+          <button onClick={() => dispatch(incrementByAmount(100))}>+100</button>
+        </Route>
+      </Switch>
+    </Router>
   );
 }
 
